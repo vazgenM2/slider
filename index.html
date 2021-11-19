@@ -4,8 +4,11 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content=bc84bb35a72b9769f071f1f02fb6f071 name="checksum">
+	<meta content=first_channel name="channel_name">
+	<meta content=False name="is_nested">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>first_channel</title>
 </head>
 
 <style>
@@ -126,9 +129,9 @@
 				return response.json();
 			})
 			.then((data) => {
-				// if ($("meta[name=checksum]").attr("content") !== data.checksum) {
-				// 	location.reload()
-				// }
+				if (document.querySelector("meta[name=checksum]").getAttribute("content") !== data.checksum) {
+					location.reload()
+				}
 				if (document.querySelector('#box').children.length === 0) {
 					console.log("Length of images is: 0")
 					updatePosters(data);
@@ -136,11 +139,9 @@
 			});
 	}
 	getPosters()
-	// setInterval(() => {
-	// 	console.log("in timeout function");
-	// 	getPosters()
-	// }, 15000);
-
+	setInterval(() => {
+		getPosters()
+	}, 15000);
 
 </script>
 
