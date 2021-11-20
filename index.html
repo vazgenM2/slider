@@ -11,6 +11,7 @@
 	<title>first_channel</title>
 </head>
 
+<!-- ======================== CSS ===================================  -->
 <style>
 	* {
 		margin: 0;
@@ -34,8 +35,9 @@
 	.bg {
 		position: absolute;
 		inset: 0;
-		background-color: #fff;
+		background-color: #000;
 		z-index: 2;
+		/* z-index: -2; */
 	}
 
 	#box {
@@ -50,16 +52,19 @@
 		position: absolute;
 		height: 100%;
 		width: 100%;
+		object-fit: cover;
+		border: none;
 		/* opacity: 0; */
 		z-index: 1;
-		inset: 0;
-		transition: 0.4s;
+		/* inset: 0; */
+		/* transform: translateX(0); */
 	}
 
 	#box img.active,
 	#box video.active {
+		/* transform: translateX(0); */
+		z-index: 4;
 		/* opacity: 1; */
-		z-index: 3;
 	}
 
 	@keyframes slide {
@@ -68,7 +73,17 @@
 		}
 
 		100% {
-			transform: translateX(-100%);
+			transform: translateX(-100%) scale(0.8) rotate(-45deg);
+		}
+	}
+
+	@keyframes slideFromRight {
+		0% {
+			transform: translateX(100%) scale(0.9) rotate(45deg);
+		}
+
+		100% {
+			transform: translateX(0) scale(1) rotate(0deg);
 		}
 	}
 </style>
@@ -104,20 +119,35 @@
 		slide(data)
 	}
 
+	// ======================================= Work here
 	function slide(data) {
 		for (let i = 0; i < box.children.length; i++) {
 			box.children[i].classList.remove('active')
+			box.children[i].style.zIndex = 1
 		}
 		box.children[imageNumber - 1].classList.add('active')
+		box.children[imageNumber - 1].style.zIndex = 4
 
-		let time = +box.children[imageNumber - 1].getAttribute('data-timeout') * 1000
+		let time = +box.children[imageNumber - 1].getAttribute('data-timeout') * 1000// + 800 for animation
+		if (imageNumber < box.children.length) {
+			box.children[imageNumber].style.zIndex = 3
+			box.children[imageNumber].style.animation = `slideFromRight 0.8s ${data.poster[imageNumber - 1].appear_time - 1.2}s`
+		}
+		else {
+			box.children[0].style.zIndex = 3
+			box.children[0].style.animation = `slideFromRight 0.8s ${data.poster[imageNumber - 1].appear_time - 1.2}s`
+		}
+		box.children[imageNumber - 1].style.animation = `slide 0.8s ${data.poster[imageNumber - 1].appear_time - 0.8}s`
+
 		setTimeout(() => {
-			// box.children[imageNumber - 1].style.animation = 'slide 1s'
 			box.children[imageNumber - 1].classList.remove('active')
+			box.children[imageNumber - 1].style.animation = `none`
+
 			if (imageNumber < box.children.length) imageNumber++
 			else imageNumber = 1
+
 			box.children[imageNumber - 1].classList.add('active')
-			updatePosters(data)
+			slide(data)
 		}, time)
 	}
 
